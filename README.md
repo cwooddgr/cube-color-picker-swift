@@ -1,8 +1,12 @@
 # CubeColorPicker (iOS)
 
-A SwiftUI port of the [cube-color-picker](https://github.com/cwooddgr/cube-color-picker) web component — a 3D isometric cube color picker for iOS. Drag axis handles to resize the cube, tap or drag on any face to pick a color.
+A SwiftUI port of [cube-color-picker](https://github.com/cwooddgr/cube-color-picker) — a 3D isometric cube color picker for iOS. Drag axis handles to resize the cube, tap or drag on any face to pick a color.
 
 Supports RGB, HSB, and OKLCH color modes. The color math, isometric projection, and interaction model match the web version.
+
+<img src="screenshot.png" alt="CubeColorPicker running on iPhone" width="320">
+
+> **Building for the web?** The TypeScript version lives at [cwooddgr/cube-color-picker](https://github.com/cwooddgr/cube-color-picker).
 
 ## Requirements
 
