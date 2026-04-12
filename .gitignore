@@ -1,0 +1,12 @@
+.DS_Store
+
+# Swift / SPM
+.build/
+.swiftpm/
+Package.resolved
+
+# Xcode
+Demo/CubePickerDemo.xcodeproj/
+xcuserdata/
+DerivedData/
+*.xcworkspace/xcuserdata/
