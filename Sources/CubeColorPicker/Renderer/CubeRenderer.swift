@@ -230,9 +230,9 @@ func renderFaceGradientInLayer(
     )
 
     let image = Image(decorative: cgImage, scale: 1.0)
+    let resolved = context.resolve(image)
 
     context.drawLayer { layerContext in
-        let resolved = layerContext.resolve(image)
         layerContext.clip(to: clipPath)
         layerContext.concatenate(transform)
         layerContext.draw(resolved, in: CGRect(x: 0, y: 0, width: res, height: res))
