@@ -250,13 +250,16 @@ func renderFaceGradientInLayer(
         ty: oy
     )
 
+    // draw(Image, in:) rather than draw(ResolvedImage, in:): on iOS 26 in
+    // sheet > NavigationStack > ScrollView, the ResolvedImage overload
+    // silently no-ops under a non-identity CTM. The Image overload goes
+    // through a different path.
     let image = Image(decorative: cgImage, scale: 1.0)
-    let resolved = context.resolve(image)
 
     var faceCtx = context
     faceCtx.clip(to: clipPath)
     faceCtx.concatenate(transform)
-    faceCtx.draw(resolved, in: CGRect(x: 0, y: 0, width: res, height: res))
+    faceCtx.draw(image, in: CGRect(x: 0, y: 0, width: res, height: res))
 }
 
 // MARK: - Complete Render (using layers for proper isolation)
