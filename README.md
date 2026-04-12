@@ -35,100 +35,63 @@ targets: [
 ]
 ```
 
-## Usage — full picker
+## Usage
 
-The simplest way: drop in `CubePickerView()` with a shared `CubePickerState`.
+Bind an `RGBColor` to `CubePickerView` and you're done.
 
 ```swift
 import SwiftUI
 import CubeColorPicker
 
 struct ContentView: View {
-    @StateObject private var state = CubePickerState()
+    @State private var color = RGBColor(r: 128, g: 128, b: 128)
 
     var body: some View {
-        CubePickerView()
-            .environmentObject(state)
-            .onChange(of: state.dotValues) { _ in
-                print(state.currentColor.hex)
+        CubePickerView(color: $color)
+            .onChange(of: color) { newColor in
+                print(ColorMath.rgbToHex(newColor))
             }
     }
 }
 ```
 
-## Usage — compose your own controls
-
-Every control is a standalone SwiftUI view that reads from a shared `CubePickerState` via `@EnvironmentObject`. Include only the ones you want.
+Also bind the active mode if you want the host to observe or drive it:
 
 ```swift
-struct ContentView: View {
-    @StateObject private var state = CubePickerState()
+@State private var color = RGBColor(r: 180, g: 100, b: 220)
+@State private var mode: ColorMode = .oklch
 
-    var body: some View {
-        VStack(spacing: 16) {
-            CubeCanvasView()                  // always required
-            HStack {
-                HexFieldView()
-                CopyButton()
-            }
-        }
-        .environmentObject(state)
-    }
-}
+CubePickerView(color: $color, mode: $mode)
 ```
 
-Available views:
-
-| View | Purpose |
-|------|---------|
-| `CubeCanvasView` | The 3D cube viewport (required) |
-| `ColorSwatchView` | Rounded square preview of the current color |
-| `HexFieldView` | Editable hex color text field |
-| `CopyButton` | Copies the current hex to the clipboard |
-| `ModeToggleView` | Segmented RGB / HSB / OKLCH switcher |
-| `ChannelInputsView` | Three labeled numeric fields (R/G/B, H/S/B, or L/C/H) |
-| `CubePickerView` | Convenience wrapper that composes all of the above |
-
-`CubePickerView` accepts a `CubePickerConfiguration` to toggle which subviews it renders:
+Pass a `CubePickerConfiguration` to hide sub-parts or change the cube size:
 
 ```swift
-CubePickerView(configuration: CubePickerConfiguration(
-    showSwatch: true,
-    showHexField: true,
-    showCopyButton: true,
-    showModeToggle: false,   // hide the mode toggle
-    showChannelInputs: false, // hide the channel inputs
-    size: 280
-))
-```
-
-## `CubePickerState`
-
-The shared state object your views bind to.
-
-```swift
-public final class CubePickerState: ObservableObject {
-    @Published public var cubeExtent: Vec3
-    @Published public var dotValues: Vec3
-    @Published public var mode: ColorMode
-    @Published public var axisConstrainEnabled: Bool  // shift-style axis lock
-    @Published public var faceLockEnabled: Bool       // option-style face lock
-
-    public var currentColor: ColorOutput { /* rgb, hsb, oklch, hex */ }
-
-    public func setColor(_ rgb: RGBColor)
-    public func setMode(_ mode: ColorMode, animated: Bool = true)
-}
-```
-
-Construct with an initial color and/or mode:
-
-```swift
-@StateObject private var state = CubePickerState(
-    initialColor: RGBColor(r: 180, g: 100, b: 220),
-    mode: .oklch
+CubePickerView(
+    color: $color,
+    configuration: CubePickerConfiguration(
+        showSwatch: true,
+        showHexField: true,
+        showCopyButton: true,
+        showModeToggle: false,   // hide the mode toggle
+        showChannelInputs: false, // hide the channel inputs
+        size: 280
+    )
 )
 ```
+
+## Public API
+
+| Symbol | Purpose |
+|--------|---------|
+| `CubePickerView` | The picker view. Init: `CubePickerView(color:mode:configuration:)`. |
+| `CubePickerConfiguration` | Visibility toggles and cube size. |
+| `RGBColor`, `HSBColor`, `OKLCHColor` | Color value types. |
+| `ColorMode` | `.rgb`, `.hsb`, `.oklch`. |
+| `ColorOutput` | Bundle of all four representations (RGB / HSB / OKLCH / hex). |
+| `ColorMath.rgbToHex`, `ColorMath.hexToRgb` | Hex string conversion. |
+| `ColorMath.rgbToHsb`, `ColorMath.hsbToRgb` | RGB ↔ HSB conversion. |
+| `ColorMath.rgbToOklch`, `ColorMath.oklchToRgb` | RGB ↔ OKLCH conversion. |
 
 ## Color modes
 
@@ -140,10 +103,8 @@ Construct with an initial color and/or mode:
 
 - **Axis handles** (colored circles on each axis): drag to resize the cube along that axis.
 - **Face tap / drag**: tap on a face to place the color dot and select a color. Drag across faces seamlessly.
-- **Axis-constrain mode** (`state.axisConstrainEnabled = true`): locks the dot to one axis during drag (equivalent to Shift in the web version). Wire a toggle button to this in your UI if you want the behavior.
-- **Face-lock mode** (`state.faceLockEnabled = true`): clamps the dot to the current face instead of crossing to an adjacent one (equivalent to Option in the web version).
 
-Touch targets for axis handles are 30pt radius (60pt diameter), exceeding Apple's 44pt minimum.
+Touch targets for axis handles are 30pt radius (60pt diameter), exceeding Apple's 44pt minimum. The canvas uses `.highPriorityGesture` so drags started on the cube always reach the picker even when hosted inside a `ScrollView`; start a scroll gesture outside the cube to scroll past it.
 
 ## Running the demo app
 
@@ -171,7 +132,7 @@ swift test
 ```
 Sources/CubeColorPicker/
 ├── Models/
-│   ├── ColorTypes.swift       # RGBColor, HSBColor, OKLCHColor, Vec2, Vec3, FACES, etc.
+│   ├── ColorTypes.swift       # RGBColor, HSBColor, OKLCHColor, ColorMode, ColorOutput
 │   └── ColorMath.swift        # All color conversion + gamut clamping
 ├── Renderer/
 │   ├── IsometricProjection.swift  # project(), cubeVertices(), faceHitTest()
@@ -179,8 +140,8 @@ Sources/CubeColorPicker/
 ├── Interaction/
 │   └── CubeGestureHandler.swift   # Drag state machine, cross-face transitions
 ├── State/
-│   └── CubePickerState.swift      # ObservableObject, mode switch animation
-└── Views/                         # The composable SwiftUI views listed above
+│   └── CubePickerState.swift      # Internal ObservableObject, mode switch animation
+└── Views/                         # Internal sub-views composed by CubePickerView
 ```
 
 Face gradient textures are rendered as 128×128 `CGImage`s and drawn via affine-transformed clip regions on the SwiftUI `Canvas`, with a per-face cache that invalidates when `cubeExtent` or `mode` changes.

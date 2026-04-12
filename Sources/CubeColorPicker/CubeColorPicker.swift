@@ -1,24 +1,16 @@
-// CubeColorPicker - Public re-exports
+// CubeColorPicker - Public API
 //
-// This file provides a convenient namespace and re-exports all public types.
-// Users can import CubeColorPicker to access everything.
+// This file documents the public surface of the module. Every symbol listed
+// below is accessible by importing `CubeColorPicker`.
 
 import SwiftUI
 
-// All public types are already accessible via the module.
-// This file exists as the module's entry point and documents the public API.
-
-// MARK: - Public Types (from Models/ColorTypes.swift)
+// MARK: - Color Types (from Models/ColorTypes.swift)
 // - RGBColor
 // - HSBColor
 // - OKLCHColor
 // - ColorMode
-// - Vec2
-// - Vec3
 // - ColorOutput
-// - FaceDef
-// - FACES
-// - RenderState
 
 // MARK: - Color Math (from Models/ColorMath.swift)
 // - ColorMath.rgbToHsb(_:)
@@ -27,20 +19,7 @@ import SwiftUI
 // - ColorMath.oklchToRgb(_:)
 // - ColorMath.rgbToHex(_:)
 // - ColorMath.hexToRgb(_:)
-// - ColorMath.valuesToRgb(_:mode:)
-// - ColorMath.rgbToValues(_:mode:)
-// - ColorMath.valuesToChannels(_:mode:)
-// - ColorMath.faceColor(faceAxis:u:v:fixedValue:mode:)
 
-// MARK: - State (from State/CubePickerState.swift)
-// - CubePickerState
-
-// MARK: - Views (from Views/)
-// - CubePickerView (convenience wrapper)
-// - CubeCanvasView (3D cube viewport)
-// - ColorSwatchView
-// - HexFieldView
-// - CopyButton
-// - ModeToggleView
-// - ChannelInputsView
+// MARK: - View (from Views/CubePickerView.swift)
+// - CubePickerView(color:mode:configuration:)
 // - CubePickerConfiguration

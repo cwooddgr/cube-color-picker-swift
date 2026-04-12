@@ -71,11 +71,11 @@ public enum ColorMode: String, CaseIterable, Sendable {
 // MARK: - Vec2
 
 /// A 2D point in screen space.
-public struct Vec2: Equatable, Sendable {
-    public var x: Double
-    public var y: Double
+struct Vec2: Equatable, Sendable {
+    var x: Double
+    var y: Double
 
-    public init(x: Double, y: Double) {
+    init(x: Double, y: Double) {
         self.x = x
         self.y = y
     }
@@ -84,19 +84,19 @@ public struct Vec2: Equatable, Sendable {
 // MARK: - Vec3
 
 /// A 3D point with axis values (typically normalized 0-1).
-public struct Vec3: Equatable, Sendable {
-    public var x: Double
-    public var y: Double
-    public var z: Double
+struct Vec3: Equatable, Sendable {
+    var x: Double
+    var y: Double
+    var z: Double
 
-    public init(x: Double, y: Double, z: Double) {
+    init(x: Double, y: Double, z: Double) {
         self.x = x
         self.y = y
         self.z = z
     }
 
     /// Subscript by axis index: 0=x, 1=y, 2=z.
-    public subscript(axis: Int) -> Double {
+    subscript(axis: Int) -> Double {
         get {
             switch axis {
             case 0: return x
@@ -134,17 +134,17 @@ public struct ColorOutput: Equatable, Sendable {
 // MARK: - Face Definition
 
 /// Defines one of the three visible faces of the isometric cube.
-public struct FaceDef: Sendable {
+struct FaceDef: Sendable {
     /// Indices into the cube vertex array for this face's quad.
-    public let quad: [Int]
+    let quad: [Int]
     /// The axis index (0/1/2) that is fixed for this face.
-    public let fixedAxis: Int
+    let fixedAxis: Int
     /// The axis index for the U direction.
-    public let uAxis: Int
+    let uAxis: Int
     /// The axis index for the V direction.
-    public let vAxis: Int
+    let vAxis: Int
 
-    public init(quad: [Int], fixedAxis: Int, uAxis: Int, vAxis: Int) {
+    init(quad: [Int], fixedAxis: Int, uAxis: Int, vAxis: Int) {
         self.quad = quad
         self.fixedAxis = fixedAxis
         self.uAxis = uAxis
@@ -153,7 +153,7 @@ public struct FaceDef: Sendable {
 }
 
 /// The three visible faces: top (z fixed), right (x fixed), left (y fixed).
-public let FACES: [FaceDef] = [
+let FACES: [FaceDef] = [
     // Top face -- z fixed, varying x and y
     FaceDef(quad: [3, 5, 7, 6], fixedAxis: 2, uAxis: 0, vAxis: 1),
     // Right face -- x fixed, varying y and z
@@ -165,13 +165,13 @@ public let FACES: [FaceDef] = [
 // MARK: - Render State
 
 /// Tracks which elements are hovered or being dragged during interaction.
-public struct RenderState: Equatable, Sendable {
-    public var hoveredAxisHandle: Int
-    public var draggingAxisHandle: Int
-    public var hoveredFace: Int
-    public var draggingFace: Int
+struct RenderState: Equatable, Sendable {
+    var hoveredAxisHandle: Int
+    var draggingAxisHandle: Int
+    var hoveredFace: Int
+    var draggingFace: Int
 
-    public init(
+    init(
         hoveredAxisHandle: Int = -1,
         draggingAxisHandle: Int = -1,
         hoveredFace: Int = -1,
@@ -183,5 +183,5 @@ public struct RenderState: Equatable, Sendable {
         self.draggingFace = draggingFace
     }
 
-    public static let `default` = RenderState()
+    static let `default` = RenderState()
 }

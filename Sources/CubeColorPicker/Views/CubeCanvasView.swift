@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The 3D cube viewport rendered via SwiftUI Canvas with drag gesture support.
-public struct CubeCanvasView: View {
+struct CubeCanvasView: View {
     @EnvironmentObject private var state: CubePickerState
 
     /// The gesture handler; lazily created per state instance.
@@ -13,9 +13,9 @@ public struct CubeCanvasView: View {
     /// Per-face texture cache, reused across frames.
     @State private var textureCache = FaceTextureCache()
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { geometry in
             Canvas { context, size in
                 renderCubeScene(
@@ -29,7 +29,7 @@ public struct CubeCanvasView: View {
                     textureCache: textureCache
                 )
             }
-            .gesture(
+            .highPriorityGesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         ensureGestureHandler()

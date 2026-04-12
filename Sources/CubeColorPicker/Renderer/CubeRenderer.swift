@@ -57,13 +57,13 @@ struct FaceTextureKey: Hashable {
 
 /// Reference-type cache of face textures keyed by their generation inputs.
 /// Held outside the value-type renderer so cached textures persist across redraws.
-public final class FaceTextureCache {
+final class FaceTextureCache {
     /// Cached image per face index (0=top, 1=right, 2=left).
     private var images: [Int: CGImage] = [:]
     /// Cached key per face index.
     private var keys: [Int: FaceTextureKey] = [:]
 
-    public init() {}
+    init() {}
 
     /// Return the cached texture for `faceIndex` if its key matches, else regenerate.
     func texture(
@@ -242,7 +242,7 @@ func renderFaceGradientInLayer(
 // MARK: - Complete Render (using layers for proper isolation)
 
 /// The main render function that draws the entire cube scene using isolated layers.
-public func renderCubeScene(
+func renderCubeScene(
     context: inout GraphicsContext,
     size: CGSize,
     cubeExtent: Vec3,

@@ -6,13 +6,13 @@ import AppKit
 #endif
 
 /// A button that copies the current hex color to the clipboard.
-public struct CopyButton: View {
+struct CopyButton: View {
     @EnvironmentObject private var state: CubePickerState
     @State private var copied: Bool = false
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         Button(action: copyHex) {
             Image(systemName: copied ? "checkmark" : "doc.on.doc")
                 .font(.system(size: 13))

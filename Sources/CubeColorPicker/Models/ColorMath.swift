@@ -6,7 +6,7 @@ public enum ColorMath {
     // MARK: - OKLCH Max Chroma
 
     /// OKLCH max chroma for normalized axis mapping (covers sRGB gamut).
-    public static let OKLCH_C_MAX: Double = 0.4
+    static let OKLCH_C_MAX: Double = 0.4
 
     // MARK: - RGB <-> HSB
 
@@ -185,7 +185,7 @@ public enum ColorMath {
     // MARK: - Normalized Values <-> RGB
 
     /// Convert normalized 0-1 axis values to an RGB color based on current mode.
-    public static func valuesToRgb(_ values: Vec3, mode: ColorMode) -> RGBColor {
+    static func valuesToRgb(_ values: Vec3, mode: ColorMode) -> RGBColor {
         switch mode {
         case .rgb:
             return RGBColor(
@@ -210,7 +210,7 @@ public enum ColorMath {
     }
 
     /// Convert an RGB color to normalized 0-1 axis values for the given mode.
-    public static func rgbToValues(_ rgb: RGBColor, mode: ColorMode) -> Vec3 {
+    static func rgbToValues(_ rgb: RGBColor, mode: ColorMode) -> Vec3 {
         switch mode {
         case .rgb:
             return Vec3(
@@ -236,7 +236,7 @@ public enum ColorMath {
     }
 
     /// Get raw channel values from normalized values.
-    public static func valuesToChannels(_ values: Vec3, mode: ColorMode) -> [Double] {
+    static func valuesToChannels(_ values: Vec3, mode: ColorMode) -> [Double] {
         let maxVals = mode.axisMax
         return [
             floor(values.x * maxVals[0] + 0.5),
@@ -246,7 +246,7 @@ public enum ColorMath {
     }
 
     /// Compute the RGB color for a point on a cube face.
-    public static func faceColor(
+    static func faceColor(
         faceAxis: Int,
         u: Double,
         v: Double,

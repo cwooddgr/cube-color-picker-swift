@@ -9,7 +9,7 @@ let SIN30: Double = sin(ISO_ANGLE)
 let FACE_RES: Int = 128
 
 /// Project a 3D point to 2D screen coordinates (isometric projection).
-public func project(_ p: Vec3, scale: Double, center: Vec2) -> Vec2 {
+func project(_ p: Vec3, scale: Double, center: Vec2) -> Vec2 {
     return Vec2(
         x: center.x + (p.x - p.y) * COS30 * scale,
         y: center.y - p.z * scale + (p.x + p.y) * SIN30 * scale
@@ -34,14 +34,14 @@ func cubeVertices(extent ext: Vec3) -> [Vec3] {
 }
 
 /// Get the 2D position of an axis handle.
-public func getAxisHandlePos(axisIndex: Int, cubeExtent: Vec3, scale: Double, center: Vec2) -> Vec2 {
+func getAxisHandlePos(axisIndex: Int, cubeExtent: Vec3, scale: Double, center: Vec2) -> Vec2 {
     var pos = Vec3(x: 0, y: 0, z: 0)
     pos[axisIndex] = cubeExtent[axisIndex]
     return project(pos, scale: scale, center: center)
 }
 
 /// Get normalized direction vectors for each axis in screen space.
-public func getAxisDirections() -> [Vec2] {
+func getAxisDirections() -> [Vec2] {
     let origin = Vec2(x: 0, y: 0)
     let tips = [
         project(Vec3(x: 1, y: 0, z: 0), scale: 1, center: origin),
@@ -55,14 +55,14 @@ public func getAxisDirections() -> [Vec2] {
 }
 
 /// Hit-test result for a face.
-public struct FaceHitResult {
-    public var s: Double // 0-1 fraction along U axis
-    public var t: Double // 0-1 fraction along V axis
+struct FaceHitResult {
+    var s: Double // 0-1 fraction along U axis
+    var t: Double // 0-1 fraction along V axis
 }
 
 /// Hit-test a point against a face's visible area.
 /// Returns (s, t) as fractions 0-1 of the face's current extent, or nil if not hit.
-public func faceHitTest(
+func faceHitTest(
     faceIndex: Int,
     point: Vec2,
     cubeExtent: Vec3,
@@ -115,7 +115,7 @@ public func faceHitTest(
 
 /// Like faceHitTest but always returns a result (clamped to 0-1),
 /// even when the cursor is far outside the face. Used with face-lock drag.
-public func faceHitTestUnclamped(
+func faceHitTestUnclamped(
     faceIndex: Int,
     point: Vec2,
     cubeExtent: Vec3,

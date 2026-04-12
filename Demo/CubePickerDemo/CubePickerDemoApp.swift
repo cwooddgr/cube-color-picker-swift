@@ -3,18 +3,16 @@ import CubeColorPicker
 
 @main
 struct CubePickerDemoApp: App {
-    @StateObject private var pickerState = CubePickerState()
-
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(pickerState)
         }
     }
 }
 
 struct ContentView: View {
-    @EnvironmentObject var state: CubePickerState
+    @State private var color = RGBColor(r: 180, g: 100, b: 220)
+    @State private var mode: ColorMode = .rgb
 
     var body: some View {
         ScrollView {
@@ -23,20 +21,22 @@ struct ContentView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                CubePickerView()
+                CubePickerView(color: $color, mode: $mode)
 
                 // Show current color info
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Current Color")
                         .font(.headline)
-                    let color = state.currentColor
-                    Text("RGB: \(color.rgb.r), \(color.rgb.g), \(color.rgb.b)")
+                    let hsb = ColorMath.rgbToHsb(color)
+                    let oklch = ColorMath.rgbToOklch(color)
+                    let hex = ColorMath.rgbToHex(color)
+                    Text("RGB: \(color.r), \(color.g), \(color.b)")
                         .font(.system(.body, design: .monospaced))
-                    Text("Hex: \(color.hex)")
+                    Text("Hex: \(hex)")
                         .font(.system(.body, design: .monospaced))
-                    Text("HSB: \(Int(color.hsb.h)), \(Int(color.hsb.s)), \(Int(color.hsb.b))")
+                    Text("HSB: \(Int(hsb.h)), \(Int(hsb.s)), \(Int(hsb.b))")
                         .font(.system(.body, design: .monospaced))
-                    Text("OKLCH: \(String(format: "%.3f", color.oklch.l)), \(String(format: "%.3f", color.oklch.c)), \(Int(color.oklch.h))")
+                    Text("OKLCH: \(String(format: "%.3f", oklch.l)), \(String(format: "%.3f", oklch.c)), \(Int(oklch.h))")
                         .font(.system(.body, design: .monospaced))
                 }
                 .padding()

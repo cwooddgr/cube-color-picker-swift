@@ -2,26 +2,26 @@ import SwiftUI
 import Combine
 
 /// The shared observable state for the cube color picker.
-/// Inject as an EnvironmentObject to share across composable views.
-public final class CubePickerState: ObservableObject {
+/// Owned internally by `CubePickerView` and injected into its sub-views.
+final class CubePickerState: ObservableObject {
 
     /// The cube dimensions per axis (0-1), controlled by axis handles.
-    @Published public var cubeExtent: Vec3 = Vec3(x: 1, y: 1, z: 1)
+    @Published var cubeExtent: Vec3 = Vec3(x: 1, y: 1, z: 1)
 
     /// The selected color as normalized axis values (0-1 per axis).
-    @Published public var dotValues: Vec3 = Vec3(x: 0.7, y: 0.4, z: 0.85)
+    @Published var dotValues: Vec3 = Vec3(x: 0.7, y: 0.4, z: 0.85)
 
     /// Which face the dot is placed on (0=top, 1=right, 2=left), or -1 for none.
-    @Published public var dotFace: Int = 0
+    @Published var dotFace: Int = 0
 
     /// The active color mode.
-    @Published public var mode: ColorMode = .rgb
+    @Published var mode: ColorMode = .rgb
 
     /// When true, face drags are constrained to one axis (like Shift on web).
-    @Published public var axisConstrainEnabled: Bool = false
+    @Published var axisConstrainEnabled: Bool = false
 
     /// When true, face drags are locked to the current face (like Option on web).
-    @Published public var faceLockEnabled: Bool = false
+    @Published var faceLockEnabled: Bool = false
 
     /// Internal render state for hover/drag visual feedback.
     @Published var renderState: RenderState = .default
@@ -35,12 +35,9 @@ public final class CubePickerState: ObservableObject {
     private var animFromExt: Vec3 = Vec3(x: 0, y: 0, z: 0)
     private var animToExt: Vec3 = Vec3(x: 0, y: 0, z: 0)
 
-    /// Change callback closures.
-    private var changeCallbacks: [(ColorOutput) -> Void] = []
+    init() {}
 
-    public init() {}
-
-    public init(initialColor: RGBColor, mode: ColorMode = .rgb) {
+    init(initialColor: RGBColor, mode: ColorMode = .rgb) {
         self.mode = mode
         self.dotValues = ColorMath.rgbToValues(initialColor, mode: mode)
     }
@@ -48,7 +45,7 @@ public final class CubePickerState: ObservableObject {
     // MARK: - Computed Properties
 
     /// The current color output in all representations.
-    public var currentColor: ColorOutput {
+    var currentColor: ColorOutput {
         let rgb = ColorMath.valuesToRgb(dotValues, mode: mode)
         return ColorOutput(
             rgb: rgb,
@@ -58,21 +55,20 @@ public final class CubePickerState: ObservableObject {
         )
     }
 
-    // MARK: - Public Methods
+    // MARK: - Methods
 
     /// Set the color from an RGB value.
-    public func setColor(_ rgb: RGBColor) {
+    func setColor(_ rgb: RGBColor) {
         dotValues = ColorMath.rgbToValues(rgb, mode: mode)
         cubeExtent = Vec3(
             x: max(cubeExtent.x, dotValues.x),
             y: max(cubeExtent.y, dotValues.y),
             z: max(cubeExtent.z, dotValues.z)
         )
-        emitChange()
     }
 
     /// Switch to a new color mode, optionally with animation.
-    public func setMode(_ newMode: ColorMode, animated: Bool = true) {
+    func setMode(_ newMode: ColorMode, animated: Bool = true) {
         guard newMode != mode else { return }
         let rgb = ColorMath.valuesToRgb(dotValues, mode: mode)
         let oldDot = dotValues
@@ -88,13 +84,7 @@ public final class CubePickerState: ObservableObject {
         } else {
             dotValues = newDot
             cubeExtent = newExt
-            emitChange()
         }
-    }
-
-    /// Register a change callback.
-    public func onChange(_ callback: @escaping (ColorOutput) -> Void) {
-        changeCallbacks.append(callback)
     }
 
     // MARK: - Animation
@@ -143,21 +133,10 @@ public final class CubePickerState: ObservableObject {
             z: animFromExt.z + (animToExt.z - animFromExt.z) * ease
         )
 
-        emitChange()
-
         if t >= 1.0 {
             timer.invalidate()
             animationTimer = nil
             animationStartTime = nil
-        }
-    }
-
-    // MARK: - Events
-
-    private func emitChange() {
-        let output = currentColor
-        for callback in changeCallbacks {
-            callback(output)
         }
     }
 }

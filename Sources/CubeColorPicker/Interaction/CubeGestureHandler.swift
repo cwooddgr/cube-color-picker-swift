@@ -5,7 +5,7 @@ let HANDLE_HIT_RADIUS: Double = 30
 
 /// Manages all drag interaction on the cube canvas.
 /// Ports the state machine from interaction.ts.
-public class CubeGestureHandler {
+class CubeGestureHandler {
 
     private weak var state: CubePickerState?
 
@@ -25,7 +25,7 @@ public class CubeGestureHandler {
         case v
     }
 
-    public init(state: CubePickerState) {
+    init(state: CubePickerState) {
         self.state = state
     }
 
@@ -72,7 +72,7 @@ public class CubeGestureHandler {
     // MARK: - Gesture Handlers
 
     /// Called when a drag gesture begins.
-    public func onDragStart(value: DragGesture.Value, size: CGSize) {
+    func onDragStart(value: DragGesture.Value, size: CGSize) {
         let pt = Vec2(x: value.location.x, y: value.location.y)
 
         // Test axis handles first
@@ -94,7 +94,7 @@ public class CubeGestureHandler {
     }
 
     /// Called during drag gesture updates.
-    public func onDragChanged(value: DragGesture.Value, size: CGSize) {
+    func onDragChanged(value: DragGesture.Value, size: CGSize) {
         let pt = Vec2(x: value.location.x, y: value.location.y)
 
         if dragAxis >= 0 {
@@ -113,7 +113,7 @@ public class CubeGestureHandler {
     }
 
     /// Called when drag gesture ends.
-    public func onDragEnded() {
+    func onDragEnded() {
         let wasDragging = dragAxis >= 0 || dragFace >= 0
         endAxisDrag()
         endFaceDrag()

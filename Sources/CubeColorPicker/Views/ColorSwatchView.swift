@@ -1,12 +1,12 @@
 import SwiftUI
 
 /// A rounded rectangle swatch showing the current color.
-public struct ColorSwatchView: View {
+struct ColorSwatchView: View {
     @EnvironmentObject private var state: CubePickerState
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         let rgb = state.currentColor.rgb
         let color = Color(
             red: Double(rgb.r) / 255.0,

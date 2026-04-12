@@ -1,14 +1,14 @@
 import SwiftUI
 
 /// Three labeled numeric text fields for the current mode's channels.
-public struct ChannelInputsView: View {
+struct ChannelInputsView: View {
     @EnvironmentObject private var state: CubePickerState
     @State private var channelTexts: [String] = ["", "", ""]
     @FocusState private var focusedChannel: Int?
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         HStack(spacing: 12) {
             ForEach(0..<3, id: \.self) { i in
                 VStack(spacing: 2) {
