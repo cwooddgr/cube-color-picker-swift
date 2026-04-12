@@ -175,6 +175,27 @@ func renderFaceGradientInLayer(
     mode: ColorMode,
     textureCache: FaceTextureCache?
 ) {
+    // Diagnostic hook: when enabled, fill the face with a single flat
+    // R/G/B color keyed by `fixedAxis` and skip the CGImage pipeline
+    // entirely. See `CubeColorPickerDebug.solidFaces`.
+    if CubeColorPickerDebug.solidFaces {
+        var debugPath = Path()
+        debugPath.move(to: CGPoint(x: corners[0].x, y: corners[0].y))
+        debugPath.addLine(to: CGPoint(x: corners[1].x, y: corners[1].y))
+        debugPath.addLine(to: CGPoint(x: corners[2].x, y: corners[2].y))
+        debugPath.addLine(to: CGPoint(x: corners[3].x, y: corners[3].y))
+        debugPath.closeSubpath()
+
+        let debugColor: Color
+        switch fixedAxis {
+        case 0: debugColor = Color(red: 1.0, green: 0.0, blue: 0.0).opacity(0.85)
+        case 1: debugColor = Color(red: 0.0, green: 1.0, blue: 0.0).opacity(0.85)
+        default: debugColor = Color(red: 0.0, green: 0.0, blue: 1.0).opacity(0.85)
+        }
+        context.fill(debugPath, with: .color(debugColor))
+        return
+    }
+
     let cgImageOpt: CGImage?
     if let textureCache = textureCache {
         cgImageOpt = textureCache.texture(
