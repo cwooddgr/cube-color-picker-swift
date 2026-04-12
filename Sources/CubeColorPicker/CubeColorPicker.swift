@@ -44,10 +44,3 @@ import SwiftUI
 // - ModeToggleView
 // - ChannelInputsView
 // - CubePickerConfiguration
-
-// MARK: - Debug (from Debug/CubeColorPickerDebug.swift)
-// - CubeColorPickerDebug.solidFaces
-//   Diagnostic-only toggle. When true, cube faces are drawn as a
-//   single flat R/G/B color keyed by fixedAxis instead of going
-//   through the CGImage gradient pipeline. Subject to removal in a
-//   future minor version; not part of the stable public API.
