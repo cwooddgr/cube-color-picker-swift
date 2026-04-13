@@ -26,7 +26,7 @@ Or in a `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/cwooddgr/cube-color-picker-swift", from: "0.3.0"),
+    .package(url: "https://github.com/cwooddgr/cube-color-picker-swift", from: "0.3.1"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -164,6 +164,13 @@ This architecture replaced a previous SwiftUI `Canvas`-based renderer that exhib
 `CubeColorPickerDebug.solidFaces = true` swaps the gradient textures for flat per-face debug colors. Useful when diagnosing rendering issues in unusual hosts — if solid faces appear but gradients don't, the gradient-draw path is broken specifically (historically: `SwiftUI.Canvas` + nested hosts). Mutating the flag posts `Notification.Name.cubeColorPickerDebugDidChange`, which the picker view observes to trigger a redraw.
 
 ## Release notes
+
+**0.3.1** — The hex now fills more of its canvas. The isometric projection
+scale grew from `0.32` to `0.43` of the min viewport dimension, so a picker
+rendered at a given `size` shows a visibly larger cube (axis labels still
+fit). The scale constant is now shared between the renderer and the gesture
+handler via `CUBE_RENDER_SCALE_RATIO` / `cubeRenderScale(for:)` so hit
+testing can't drift from what's drawn. No public API changes.
 
 **0.3.0** — Rendering rewrite: the picker now renders via `UIViewRepresentable`
 + Core Graphics instead of `SwiftUI.Canvas`, fixing silent face-gradient
