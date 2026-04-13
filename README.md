@@ -146,6 +146,14 @@ Sources/CubeColorPicker/
 
 Face gradient textures are rendered as 128×128 `CGImage`s and drawn via affine-transformed clip regions on the SwiftUI `Canvas`, with a per-face cache that invalidates when `cubeExtent` or `mode` changes.
 
+## Release notes
+
+**0.3.0** — Rendering rewrite: the picker now renders via `UIViewRepresentable`
++ Core Graphics instead of `SwiftUI.Canvas`, fixing silent face-gradient
+failures when embedded in nested hosts (e.g. sheet + `NavigationStack` on iOS
+26). No public API changes — consumers only need to bump the SPM pin.
+`CubeColorPickerDebug.solidFaces` is restored.
+
 ## License
 
 MIT

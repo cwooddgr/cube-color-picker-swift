@@ -23,3 +23,8 @@ import SwiftUI
 // MARK: - View (from Views/CubePickerView.swift)
 // - CubePickerView(color:mode:configuration:)
 // - CubePickerConfiguration
+
+// MARK: - Debug (from Debug/CubeColorPickerDebug.swift)
+// - CubeColorPickerDebug.solidFaces — restored in 0.3.0; flips face rendering
+//   from the gradient bitmap to a flat per-face color. Useful when diagnosing
+//   image-draw failures in unusual host hierarchies.

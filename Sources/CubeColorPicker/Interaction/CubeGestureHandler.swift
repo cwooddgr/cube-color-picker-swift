@@ -72,8 +72,8 @@ class CubeGestureHandler {
     // MARK: - Gesture Handlers
 
     /// Called when a drag gesture begins.
-    func onDragStart(value: DragGesture.Value, size: CGSize) {
-        let pt = Vec2(x: value.location.x, y: value.location.y)
+    func onDragStart(location: CGPoint, size: CGSize) {
+        let pt = Vec2(x: location.x, y: location.y)
 
         // Test axis handles first
         let axisHit = hitTestAxisHandle(pt: pt, size: size)
@@ -94,8 +94,8 @@ class CubeGestureHandler {
     }
 
     /// Called during drag gesture updates.
-    func onDragChanged(value: DragGesture.Value, size: CGSize) {
-        let pt = Vec2(x: value.location.x, y: value.location.y)
+    func onDragChanged(location: CGPoint, size: CGSize) {
+        let pt = Vec2(x: location.x, y: location.y)
 
         if dragAxis >= 0 {
             applyAxisDrag(pt: pt, size: size)

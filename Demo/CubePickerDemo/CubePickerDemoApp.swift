@@ -5,7 +5,23 @@ import CubeColorPicker
 struct CubePickerDemoApp: App {
     var body: some Scene {
         WindowGroup {
+            RootView()
+        }
+    }
+}
+
+struct RootView: View {
+    var body: some View {
+        TabView {
             ContentView()
+                .tabItem {
+                    Label("Picker", systemImage: "cube")
+                }
+
+            RegressionScene()
+                .tabItem {
+                    Label("Regression", systemImage: "ladybug")
+                }
         }
     }
 }

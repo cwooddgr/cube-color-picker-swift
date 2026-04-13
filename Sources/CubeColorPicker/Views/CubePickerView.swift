@@ -63,7 +63,7 @@ public struct CubePickerView: View {
 
     public var body: some View {
         VStack(spacing: 16) {
-            CubeCanvasView()
+            CubeSceneRepresentable()
                 .frame(width: config.size, height: config.size)
 
             if config.showSwatch || config.showHexField || config.showCopyButton {
