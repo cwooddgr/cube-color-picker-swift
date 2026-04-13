@@ -119,6 +119,8 @@ open CubePickerDemo.xcodeproj
 
 Then pick an iOS Simulator and hit ⌘R.
 
+> **Note:** The picker may not render correctly in the iOS Simulator — face gradients and transforms can appear glitchy or blank. Test on a physical device to verify rendering behavior.
+
 ## Running tests
 
 ```bash
