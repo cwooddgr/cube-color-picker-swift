@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics
 
 /// Constants for isometric projection.
 let ISO_ANGLE: Double = .pi / 6.0 // 30 degrees
@@ -7,6 +8,17 @@ let SIN30: Double = sin(ISO_ANGLE)
 
 /// Resolution of face gradient textures (128x128 pixels).
 let FACE_RES: Int = 128
+
+/// Fraction of the min viewport dimension used as the isometric projection
+/// scale. Shared between the renderer and the gesture handler so hit testing
+/// stays aligned with the drawn hex.
+let CUBE_RENDER_SCALE_RATIO: Double = 0.43
+
+/// Isometric scale for a given viewport — the distance in points from the
+/// hex center to each axis endpoint.
+func cubeRenderScale(for size: CGSize) -> Double {
+    return min(size.width, size.height) * CUBE_RENDER_SCALE_RATIO
+}
 
 /// Project a 3D point to 2D screen coordinates (isometric projection).
 func project(_ p: Vec3, scale: Double, center: Vec2) -> Vec2 {

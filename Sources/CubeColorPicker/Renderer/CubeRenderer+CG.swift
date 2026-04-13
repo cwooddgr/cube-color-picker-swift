@@ -294,7 +294,7 @@ func renderCubeScene(
     renderState: RenderState,
     textureCache: FaceTextureCache?
 ) {
-    let scale = min(size.width, size.height) * 0.32
+    let scale = cubeRenderScale(for: size)
     let center = Vec2(x: size.width / 2, y: size.height / 2)
 
     let verts3d = cubeVertices(extent: cubeExtent)

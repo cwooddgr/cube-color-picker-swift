@@ -32,7 +32,7 @@ class CubeGestureHandler {
     // MARK: - Scale/Center from viewport size
 
     func scale(for size: CGSize) -> Double {
-        return min(size.width, size.height) * 0.32
+        return cubeRenderScale(for: size)
     }
 
     func center(for size: CGSize) -> Vec2 {
