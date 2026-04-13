@@ -126,18 +126,27 @@ func generateFaceTexture(
         }
     }
 
-    guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB),
-          let context = CGContext(
-              data: &pixelData,
-              width: res,
-              height: res,
-              bitsPerComponent: 8,
-              bytesPerRow: bytesPerRow,
-              space: colorSpace,
-              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-          ) else {
+    guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
         return nil
     }
 
-    return context.makeImage()
+    // The CGContext's `data:` pointer must remain valid through makeImage().
+    // `&pixelData` via inout is only guaranteed for the duration of the
+    // CGContext constructor call, so build the context and extract the image
+    // inside withUnsafeMutableBufferPointer — makeImage() copies, so after the
+    // closure returns the CGImage is independent of the buffer.
+    return pixelData.withUnsafeMutableBufferPointer { buf -> CGImage? in
+        guard let context = CGContext(
+            data: buf.baseAddress,
+            width: res,
+            height: res,
+            bitsPerComponent: 8,
+            bytesPerRow: bytesPerRow,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return nil
+        }
+        return context.makeImage()
+    }
 }

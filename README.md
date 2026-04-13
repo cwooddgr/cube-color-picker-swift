@@ -1,6 +1,6 @@
-# CubeColorPicker (iOS)
+# CubeColorPicker
 
-A SwiftUI port of [cube-color-picker](https://github.com/cwooddgr/cube-color-picker) — a 3D isometric cube color picker for iOS. Drag axis handles to resize the cube, tap or drag on any face to pick a color.
+A SwiftUI port of [cube-color-picker](https://github.com/cwooddgr/cube-color-picker) — a 3D isometric cube color picker for iOS and macOS. Drag axis handles to resize the cube, tap/click or drag on any face to pick a color.
 
 Supports RGB, HSB, and OKLCH color modes. The color math, isometric projection, and interaction model match the web version.
 
@@ -10,9 +10,11 @@ Supports RGB, HSB, and OKLCH color modes. The color math, isometric projection, 
 
 ## Requirements
 
-- iOS 16+
+- iOS 16+ or macOS 13+
 - Swift 5.9+
 - Xcode 15+
+
+All sub-views (`CubePickerView`, `ColorSwatchView`, `HexFieldView`, `CopyButton`, `ModeToggleView`, `ChannelInputsView`) render and interact on both platforms without additional configuration.
 
 ## Install
 
@@ -108,7 +110,10 @@ Touch targets for axis handles are 30pt radius (60pt diameter), exceeding Apple'
 
 ## Running the demo app
 
-The demo is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen):
+The demo is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) and ships with two schemes that share the same sources (`Demo/CubePickerDemoShared/`):
+
+- `CubePickerDemo` — iOS app
+- `CubePickerDemoMac` — macOS app
 
 ```bash
 brew install xcodegen
@@ -117,17 +122,28 @@ xcodegen generate
 open CubePickerDemo.xcodeproj
 ```
 
-Then pick an iOS Simulator and hit ⌘R.
+Select the `CubePickerDemo` scheme and an iOS Simulator (or a connected device), or the `CubePickerDemoMac` scheme and "My Mac", then hit ⌘R.
 
 > **Note:** The picker may not render correctly in the iOS Simulator — face gradients and transforms can appear glitchy or blank. Test on a physical device to verify rendering behavior.
 
 ## Running tests
 
 ```bash
+# macOS host (fastest)
 swift test
+
+# iOS Simulator
+xcodebuild test \
+  -scheme CubeColorPicker \
+  -destination 'platform=iOS Simulator,name=iPhone 15'
+
+# macOS explicit
+xcodebuild test \
+  -scheme CubeColorPicker \
+  -destination 'platform=macOS'
 ```
 
-46 tests cover color math (RGB↔HSB↔OKLCH, gamut clamping, hex parsing, mode conversions) and isometric projection (projection formula, cube vertices, face hit-testing, axis handle positioning).
+48 tests (plus one macOS-only AppKit smoke test) cover color math (RGB↔HSB↔OKLCH, gamut clamping, hex parsing, mode conversions), isometric projection (projection formula, cube vertices, face hit-testing, axis handle positioning), and the Core Graphics scene renderer (cross-platform, drawing directly into a pixel buffer).
 
 ## Architecture
 

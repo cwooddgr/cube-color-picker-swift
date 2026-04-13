@@ -7,6 +7,9 @@ struct CubePickerDemoApp: App {
         WindowGroup {
             RootView()
         }
+        #if os(macOS)
+        .defaultSize(width: 480, height: 760)
+        #endif
     }
 }
 
@@ -57,7 +60,7 @@ struct ContentView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
+                .background(panelBackground)
                 .cornerRadius(12)
                 .padding(.horizontal)
 
@@ -65,6 +68,26 @@ struct ContentView: View {
             }
             .padding(.top)
         }
-        .background(Color(.systemBackground))
+        .background(rootBackground)
+    }
+
+    private var panelBackground: Color {
+        #if os(iOS)
+        return Color(.systemGray6)
+        #elseif os(macOS)
+        return Color(nsColor: .controlBackgroundColor)
+        #else
+        return Color.gray.opacity(0.1)
+        #endif
+    }
+
+    private var rootBackground: Color {
+        #if os(iOS)
+        return Color(.systemBackground)
+        #elseif os(macOS)
+        return Color(nsColor: .windowBackgroundColor)
+        #else
+        return Color.clear
+        #endif
     }
 }

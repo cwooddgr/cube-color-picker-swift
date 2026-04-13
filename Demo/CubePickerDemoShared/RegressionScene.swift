@@ -41,7 +41,9 @@ struct RegressionScene: View {
         }
         .padding()
         .navigationTitle("Regression case")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .sheet(isPresented: $showSheet) {
             NavigationStack {
                 ScrollView {
