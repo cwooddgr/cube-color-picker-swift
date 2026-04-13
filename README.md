@@ -26,7 +26,7 @@ Or in a `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/cwooddgr/cube-color-picker-swift", branch: "main"),
+    .package(url: "https://github.com/cwooddgr/cube-color-picker-swift", from: "0.3.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -132,19 +132,34 @@ swift test
 ```
 Sources/CubeColorPicker/
 ├── Models/
-│   ├── ColorTypes.swift       # RGBColor, HSBColor, OKLCHColor, ColorMode, ColorOutput
-│   └── ColorMath.swift        # All color conversion + gamut clamping
+│   ├── ColorTypes.swift              # RGBColor, HSBColor, OKLCHColor, ColorMode, ColorOutput
+│   └── ColorMath.swift               # All color conversion + gamut clamping
 ├── Renderer/
-│   ├── IsometricProjection.swift  # project(), cubeVertices(), faceHitTest()
-│   └── CubeRenderer.swift         # SwiftUI Canvas drawing + FaceTextureCache
+│   ├── IsometricProjection.swift     # project(), cubeVertices(), faceHitTest()
+│   ├── CubeRenderer.swift            # FaceTextureCache, generateFaceTexture
+│   └── CubeRenderer+CG.swift         # Core Graphics scene renderer
 ├── Interaction/
-│   └── CubeGestureHandler.swift   # Drag state machine, cross-face transitions
+│   └── CubeGestureHandler.swift      # Drag state machine, cross-face transitions
 ├── State/
-│   └── CubePickerState.swift      # Internal ObservableObject, mode switch animation
-└── Views/                         # Internal sub-views composed by CubePickerView
+│   └── CubePickerState.swift         # Internal ObservableObject, mode switch animation
+├── Platform/
+│   └── PlatformViewRepresentable.swift  # UIKit/AppKit typealias shim
+├── Debug/
+│   └── CubeColorPickerDebug.swift    # solidFaces diagnostic toggle
+└── Views/
+    ├── CubePickerView.swift          # Public entry point
+    ├── CubeSceneRepresentable.swift  # UIViewRepresentable / NSViewRepresentable wrapper
+    ├── CubeSceneView.swift           # PlatformView subclass that owns draw(_:) + gestures
+    └── ...                           # Internal sub-views (swatch, hex field, mode toggle, etc.)
 ```
 
-Face gradient textures are rendered as 128×128 `CGImage`s and drawn via affine-transformed clip regions on the SwiftUI `Canvas`, with a per-face cache that invalidates when `cubeExtent` or `mode` changes.
+Rendering runs through a `UIViewRepresentable` (+ `NSViewRepresentable` via typealias shim) over a `PlatformView` that overrides `draw(_:)` and paints the whole scene into the provided `CGContext`. Face gradient textures are generated once as 128×128 `CGImage`s and cached per `(fixedAxis, fixedValue, uMax, vMax, mode)` key; they're drawn with a clip to the quad path and an affine that maps the texture's `(u, v)` pixel space onto the projected quad. Gesture handling uses a native `UIPanGestureRecognizer` / `NSPanGestureRecognizer` feeding the existing `CubeGestureHandler` — no SwiftUI `DragGesture`, so there's no gesture competition with host `ScrollView`s to worry about beyond `shouldRecognizeSimultaneouslyWith`.
+
+This architecture replaced a previous SwiftUI `Canvas`-based renderer that exhibited silent face-gradient failures when the picker was embedded under a `NavigationStack` inside a sheet on iOS 26. `CGContext.draw(_:in:)` is a rock-solid primitive that doesn't care what host hierarchy surrounds the view.
+
+## Debugging
+
+`CubeColorPickerDebug.solidFaces = true` swaps the gradient textures for flat per-face debug colors. Useful when diagnosing rendering issues in unusual hosts — if solid faces appear but gradients don't, the gradient-draw path is broken specifically (historically: `SwiftUI.Canvas` + nested hosts). Mutating the flag posts `Notification.Name.cubeColorPickerDebugDidChange`, which the picker view observes to trigger a redraw.
 
 ## Release notes
 
